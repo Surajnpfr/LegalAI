@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: nepali_legal_postgres
+    environment:
+      POSTGRES_USER: legal_user
+      POSTGRES_PASSWORD: legal_password
+      POSTGRES_DB: nepali_legal_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: nepali_legal_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  postgres_data:
+  qdrant_data:
