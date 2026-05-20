@@ -1,30 +1,34 @@
+from app.ingestion.preeti_converter import preeti_to_unicode
 import argparse
 from pathlib import Path
 
 from app.db.database import SessionLocal
 from app.db.models import Document, LegalSection
+from app.ingestion.pdf_extractor import extract_text_from_pdf
 from app.ingestion.text_cleaner import clean_text
 from app.ingestion.section_splitter import split_sections
 
 
-def import_text_law(
+def import_pdf_law(
     file_path: str,
     title: str,
     document_type: str = "law",
     language: str = "ne",
-    source_url: str = "local_file",
+    source_url: str = "local_pdf",
 ):
     path = Path(file_path)
 
     if not path.exists():
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    raw_text = path.read_text(encoding="utf-8")
-    cleaned_text = clean_text(raw_text)
+    raw_text = extract_text_from_pdf(str(path))
+    unicode_text = preeti_to_unicode(raw_text)
+    cleaned_text = clean_text(unicode_text)
     sections = split_sections(cleaned_text)
 
     if not sections:
-        raise ValueError("No sections found. Check section format.")
+        preview = cleaned_text[:1000]
+        raise ValueError(f"No sections found. Text preview:\n{preview}")
 
     db = SessionLocal()
 
@@ -53,7 +57,7 @@ def import_text_law(
                 document_id=document.id,
                 section_number=section["section_number"],
                 heading=section["heading"],
-                chapter=section.get("chapter"),
+                chapter=None,
                 content=section["content"],
             )
         )
@@ -62,7 +66,7 @@ def import_text_law(
     db.commit()
     db.close()
 
-    print(f"Imported document: {title}")
+    print(f"Imported PDF document: {title}")
     print(f"Sections imported: {len(legal_sections)}")
 
 
@@ -72,11 +76,11 @@ if __name__ == "__main__":
     parser.add_argument("--title", required=True)
     parser.add_argument("--type", default="law")
     parser.add_argument("--language", default="ne")
-    parser.add_argument("--source-url", default="local_file")
+    parser.add_argument("--source-url", default="local_pdf")
 
     args = parser.parse_args()
 
-    import_text_law(
+    import_pdf_law(
         file_path=args.file,
         title=args.title,
         document_type=args.type,
