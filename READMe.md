@@ -1,6 +1,6 @@
 # Nepali Legal AI
 
-Nepali Legal AI is an open-source legal research and retrieval system focused on Nepali laws, constitutional documents, and legal knowledge.
+Nepali Legal AI is an open-source legal research and retrieval system focused on Nepali laws, constitutional documents, and legal knowledge to help in Legal works and basic Legal understandings.
 
 The project is designed to support:
 
