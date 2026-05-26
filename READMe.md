@@ -380,4 +380,4 @@ MIT License
 
 # Author
 
-Built by Suraj Nepal
+Built by Suraj Nepal.

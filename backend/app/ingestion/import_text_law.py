@@ -1,10 +1,53 @@
+# app/ingestion/import_text_law.py
 import argparse
+import asyncio
+import os
 from pathlib import Path
+from qdrant_client import QdrantClient
 
 from app.db.database import SessionLocal
 from app.db.models import Document, LegalSection
 from app.ingestion.text_cleaner import clean_text
 from app.ingestion.section_splitter import split_sections
+from app.retrieval.embedder import LocalEmbedder
+
+
+async def sync_to_qdrant(legal_sections, title, document_type):
+    """Generates embeddings using Ollama and pushes them to Qdrant in background."""
+    qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
+    q_client = QdrantClient(url=qdrant_url)
+    embedder = LocalEmbedder()
+    
+    print("\nStarting Qdrant vector embedding indexing...")
+    
+    for idx, sec in enumerate(legal_sections, 1):
+        try:
+            # Create a rich contextual string for dense vector search matching
+            text_payload = f"दस्तावेज: {title} | प्रकार: {document_type} | दफा/धारा: {sec.section_number} | शीर्षक: {sec.heading} | विवरण: {sec.content}"
+            
+            # Generate the embedding vectors using local Ollama model
+            vector_data = await embedder.get_embedding(text_payload)
+            
+            q_client.upsert(
+                collection_name="nepali_laws",
+                points=[
+                    {
+                        "id": sec.id,  # Maps directly to the generated Postgres primary key
+                        "vector": vector_data,
+                        "payload": {
+                            "law_title": title,
+                            "section_number": sec.section_number,
+                            "heading": sec.heading,
+                            "content": sec.content,
+                            "law_type": document_type
+                        }
+                    }
+                ]
+            )
+            if idx % 10 == 0 or idx == len(legal_sections):
+                print(f"Indexed {idx}/{len(legal_sections)} sections to Qdrant...")
+        except Exception as e:
+            print(f"[Warning] Failed to index section {sec.section_number} to Qdrant: {e}")
 
 
 def import_text_law(
@@ -31,6 +74,8 @@ def import_text_law(
     existing = db.query(Document).filter(Document.title == title).first()
 
     if existing:
+        # Note: Depending on your Cascade rules, you might want to ensure 
+        # that associated LegalSections are deleted when a document is dropped.
         db.delete(existing)
         db.commit()
 
@@ -58,12 +103,22 @@ def import_text_law(
             )
         )
 
+    # Bulk save to relational database
     db.add_all(legal_sections)
     db.commit()
-    db.close()
+    
+    # Refresh items to guarantee SQLAlchemy pulls back the newly created autoincrement ID keys
+    for sec in legal_sections:
+        db.refresh(sec)
 
     print(f"Imported document: {title}")
-    print(f"Sections imported: {len(legal_sections)}")
+    print(f"Sections imported to Postgres: {len(legal_sections)}")
+
+    # Trigger asynchronous Qdrant sync worker safely inside our synchronous module runtime
+    asyncio.run(sync_to_qdrant(legal_sections, title, document_type))
+
+    db.close()
+    print("Ingestion sequence successfully executed!")
 
 
 if __name__ == "__main__":
