@@ -1,383 +1,287 @@
-# Nepali Legal AI
+# ⚖️ Nepali Legal AI
 
-Nepali Legal AI is an open-source legal research and retrieval system focused on Nepali laws, constitutional documents, and legal knowledge to help in Legal works and basic Legal understandings.
+Nepali Legal AI is an open-source, production-grade legal research and retrieval ecosystem focused on Nepali laws, constitutional frameworks, and legal knowledge. It utilizes a state-of-the-art **Hybrid Retrieval-Augmented Generation (RAG)** pipeline to deliver high-fidelity, citation-grounded legal answers natively in the Nepali language, eliminating hallucinations and ensuring real-world traceability.
 
-The project is designed to support:
+### Key Capabilities:
 
-* legal search
-* semantic retrieval
-* retrieval-augmented generation (RAG)
-* bilingual Nepali/English legal workflows
-* local LLM inference
-
----
-
-# Project Status
-
-Current progress:
-
-* ✅ FastAPI backend
-* ✅ PostgreSQL integration
-* ✅ Qdrant vector database setup
-* ✅ Ollama local LLM integration
-* ✅ Unicode Nepali legal text ingestion
-* ✅ Legal section parsing
-* ✅ Search API
-* 🚧 Embeddings + semantic search
-* 🚧 Hybrid retrieval
-* 🚧 Citation-aware legal RAG
-* 🚧 Judgment ingestion
+* **Bilingual Hybrid Search:** Marries ultra-fast PostgreSQL keyword matching with deep semantic vector search via Qdrant.
+* **Strict RAG Grounding Constraint:** Programmed logic layer that restricts local LLMs from fabricating legal text or slipping into linguistic cross-drift (e.g., Hindi phrases).
+* **Real-time Citation Sidecar:** Interactive multi-panel user interface tracking exact source metadata blocks down to explicit section levels.
+* **100% Local Deployment:** Complete privacy compliance using local databases and native local hardware GPU-accelerated inference models.
 
 ---
 
-# Tech Stack
-
-## Backend
-
-* FastAPI
-* SQLAlchemy
-* PostgreSQL
-* Qdrant
-
-## AI / NLP
-
-* Ollama
-* Llama 3.2 3B
-* Future embedding models:
-
-  * bge-m3
-  * multilingual-e5
-
-## Frontend
-
-* Next.js
-* TailwindCSS
-
-## Infrastructure
-
-* Docker
-* Docker Compose
-
----
-
-# Architecture
+# 🚀 Project Status
 
 ```txt
-Frontend (Next.js)
-        ↓
-FastAPI Backend
-        ↓
-Hybrid Retrieval Layer
-    ├── PostgreSQL Keyword Search
-    └── Qdrant Semantic Search
-        ↓
-Retrieved Legal Sections
-        ↓
-Local LLM (Ollama)
-        ↓
-Legal Response with Citations
+Phase 1: Foundation (Unicode Ingestion & Relational Schema)  │  ██████████████████ 100% (Complete)
+Phase 2: Vector Space (Semantic Vector Indexing Maps)        │  ██████████████████ 100% (Complete)
+Phase 3: Cognitive Integration (Citation-Aware RAG Pipeline) │  ██████████████████ 100% (Complete)
+Phase 4: Ecosystem & Packaging (Full Stack Containerization) │  ██████████████████ 100% (Complete)
+
 ```
+
+* ✅ **FastAPI Backend Core Engine** (Asynchronous endpoints with complete CORS validation layout)
+* ✅ **PostgreSQL Storage Layer** (Type-safe SQLAlchemy ORM relational mapping schemas)
+* ✅ **Qdrant Vector Database Mapping** (Configured collections optimized for multilingual embeddings)
+* ✅ **Ollama Local LLM Orchestration** (Custom prompt containment constraints utilizing Llama 3.2 3B)
+* ✅ **Modern Next.js Dashboard Client** (Dark-mode responsive split-pane panel layout with dynamic context rendering)
+* ✅ **Unified Multi-Stage Docker Containerization** (One-click complete network stack deployment)
 
 ---
 
-# Current Features
+# 🛠️ Tech Stack
 
-## Legal Text Ingestion
+### 📂 Backend Tier
 
-Supports:
+* **FastAPI:** Asynchronous Python web framework for microservice routing.
+* **SQLAlchemy 2.0:** Modern, type-safe Object Relational Mapper.
+* **PostgreSQL 16:** Industrial-strength relational database engine.
 
-* Unicode Nepali legal text
-* Section splitting
-* Legal metadata extraction
+### 🧠 Vector & AI Tier
 
-Example:
+* **Qdrant:** High-performance vector database optimizing high-dimensional text distance operations.
+* **Ollama Pipeline:** Native localized machine architecture managing execution weights for **Llama 3.2 3B**.
+* **Embedding Matrix Roadmaps:** Engineered to natively support `bge-m3` and `multilingual-e5` models.
+
+### 💻 Frontend Client
+
+* **Next.js 15+ (App Router):** Stateful modern React framework with optimized engine components.
+* **TailwindCSS:** High-fidelity utility styling for strict layout compliance.
+
+### 🐳 DevOps & Infra
+
+* **Docker & Docker Compose:** Container abstraction wrapping application context uniformly.
+
+---
+
+# 🏗️ System Architecture
 
 ```txt
-धारा १६. सम्मानपूर्वक बाँच्न पाउने हक:
-...
-```
+              ┌─────────────────────────────────────────┐
+              │          Frontend (Next.js 15)          │
+              └────────────────────┬────────────────────┘
+                                   │  (POST /ask-legal)
+                                   ▼
+              ┌─────────────────────────────────────────┐
+              │             FastAPI Backend             │
+              └────────────────────┬────────────────────┘
+                                   ▼
+                   ┌───────────────────────────────┐
+                   │    Hybrid Retrieval Layer     │
+                   └───────┬───────────────┬───────┘
+                           │               │
+            (Sparse Match) ▼               ▼ (Dense Vector Match)
+              ┌─────────────────┐     ┌─────────────────┐
+              │  PostgreSQL DB  │     │ Qdrant Vector   │
+              └─────────────────┘     └─────────────────┐
+                           │               │
+                           └───────┬───────┘
+                                   ▼
+              ┌─────────────────────────────────────────┐
+              │    Retrieved Context (Top 4 Chunks)     │
+              └────────────────────┬────────────────────┘
+                                   ▼
+              ┌─────────────────────────────────────────┐
+              │    Ollama Inference (Llama 3.2 3B)      │
+              │  *Strict Grounding & Language Locks* │
+              └────────────────────┬────────────────────┘
+                                   ▼
+              ┌─────────────────────────────────────────┐
+              │  Grounded Nepali Answer with Citations   │
+              └─────────────────────────────────────────┘
 
-is parsed into:
-
-```json
-{
-  "section_number": "१६",
-  "heading": "सम्मानपूर्वक बाँच्न पाउने हक",
-  "content": "..."
-}
 ```
 
 ---
 
-# Search API
-
-Example:
-
-```http
-GET /search?q=न्याय
-```
-
-Response:
-
-```json
-{
-  "query": "न्याय",
-  "count": 1,
-  "results": [...]
-}
-```
-
----
-
-# Project Structure
+# 📦 Project Directory Layout
 
 ```txt
 nepali-legal-ai/
-│
 ├── backend/
 │   ├── app/
-│   │   ├── db/
-│   │   ├── ingestion/
-│   │   ├── llm/
-│   │   ├── retrieval/
-│   │   └── main.py
-│   │
-│   └── venv/
-│
+│   │   ├── api/             # Routed Endpoint Controllers
+│   │   ├── db/              # SQLAlchemy Schemas, Migration Links & Seed Builders
+│   │   ├── ingestion/       # Clean Unicode Text Segment Splitting Utilities
+│   │   ├── llm/             # Ollama Connection Clamping & Constraint Prompt Logic
+│   │   ├── retrieval/       # Hybrid Sparse/Dense Search Aggregation Frameworks
+│   │   └── main.py          # Application Entrypoint & Middleware Setup
+│   ├── Dockerfile           # Multi-Stage Python Runner Blueprint
+│   └── requirements.txt     # Python Application Package Blueprint
 ├── frontend/
-│
+│   ├── app/
+│   │   ├── layout.tsx       # Next.js Application Core Layout Root
+│   │   ├── globals.css      # Custom Structural Tailwind Layer Bindings
+│   │   └── page.tsx         # Stateful Split-Screen AI Workspace Controller
+│   ├── Dockerfile           # Multi-Stage Node Node.js Build Image Manifest
+│   └── package.json         # Node Client Package Map
 ├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── unicode_laws/
-│
-├── docker-compose.yml
-└── README.md
+│   └── raw/
+│       └── unicode_laws/    # Clean Source Plain-text Legal Materials (.txt)
+└── docker-compose.yml       # Production-grade Orchestration Blueprint
+
 ```
 
 ---
 
-# Setup
+# ⚡ Rapid Containerized Deployment (Recommended)
 
-## 1. Clone repository
+The entire application ecosystem—including web services, APIs, configurations, and internal database bridges—spins up instantly on any local environment using standard container orchestration.
+
+### 1. Launch the Multi-Service Environment
+
+Run this at the root workspace directory containing your `docker-compose.yml`:
 
 ```bash
-git clone <repo-url>
-cd nepali-legal-ai
+docker compose up -d --build
+
 ```
+
+*This fetches specialized base images, provisions isolated bridge spaces, hooks Next.js up to Node 20, and runs your app components cleanly in the background.*
+
+### 2. Prepare the Database Architecture
+
+Run your relational table and vector index creation scripts securely directly inside the live container sandbox:
+
+```bash
+# Provision PostgreSQL Tables
+docker compose exec backend python -m app.db.init_db
+
+# Provision Qdrant Vector Collections
+docker compose exec backend python -m app.db.init_qdrant
+
+```
+
+### 3. Load Your Grounding Data Assets
+
+Pass your clean text files directly into the active vector ingestion routing matrix:
+
+```bash
+# Copy host plain text into container storage space
+docker cp data/raw/unicode_laws/constitution_unicode.txt legal_backend:/tmp/constitution_unicode.txt
+
+# Execute data ingestion matrix
+docker compose exec backend python -m app.ingestion.import_text_law \
+  --file "/tmp/constitution_unicode.txt" \
+  --title "नेपालको संविधान" \
+  --type "constitution"
+
+```
+
+### 4. Access the Interface
+
+Open your browser window and navigate to your fully containerized workspace:
+👉 **Client Interface:** `http://localhost:3000`
+👉 **API Interactive Specs:** `http://localhost:8000/docs`
 
 ---
 
-# 2. Backend Setup
+# ⚙️ Manual Local Developer Environment Setup
 
-```bash
-cd backend
+If you wish to run the microservices locally outside of containers for direct workspace development loops:
 
-python -m venv venv
-```
+### 1. Provision Your Environment Variables
 
-### Windows
-
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-### Linux/macOS
-
-```bash
-source venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install fastapi uvicorn sqlalchemy psycopg2-binary python-dotenv qdrant-client requests pymupdf
-```
-
----
-
-# 3. Docker Services
-
-Run PostgreSQL + Qdrant:
-
-```bash
-docker compose up -d
-```
-
-Check:
-
-```bash
-docker ps
-```
-
----
-
-# 4. Ollama Setup
-
-Install Ollama:
-
-https://ollama.com/
-
-Pull model:
-
-```bash
-ollama pull llama3.2:3b
-```
-
-Run:
-
-```bash
-ollama run llama3.2:3b
-```
-
----
-
-# 5. Environment Variables
-
-Create:
-
-```txt
-backend/.env
-```
+Create a file named `backend/.env`:
 
 ```env
 DATABASE_URL=postgresql://legal_user:legal_password@localhost:5432/nepali_legal_ai
-
+QDRANT_URL=http://localhost:6333
 OLLAMA_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.2:3b
 
-QDRANT_URL=http://localhost:6333
 ```
 
----
+### 2. Spin Up Local Databases Only
 
-# 6. Initialize Database
+Modify your root orchestration configuration to isolate your database assets, then execute:
 
 ```bash
-python -m app.db.init_db
+docker compose up -d postgres qdrant
+
 ```
 
----
-
-# 7. Run Backend
+### 3. Initialize Python Environment
 
 ```bash
-python -m uvicorn app.main:app --reload
+cd backend
+python -m venv venv
+
+# Windows Activation
+.\venv\Scripts\activate
+
+# Installation
+pip install -r requirements.txt
+
+# Run Microservice Worker Local Dev Instance
+uvicorn app.main:app --reload
+
 ```
 
-Open:
-
-```txt
-http://127.0.0.1:8000/docs
-```
-
----
-
-# Unicode Legal Text Ingestion
-
-Place Unicode legal text files inside:
-
-```txt
-data/raw/unicode_laws/
-```
-
-Example format:
-
-```txt
-धारा १. संविधान मूल कानून:
-...
-```
-
-Import:
+### 4. Initialize Next.js Client
 
 ```bash
-python -m app.ingestion.import_text_law \
-  --file "../data/raw/unicode_laws/constitution_unicode.txt" \
-  --title "नेपालको संविधान" \
-  --type "constitution"
+cd frontend
+npm install
+npm run dev
+
 ```
 
 ---
 
-# PDF Ingestion Status
+# 🎯 Data Grounding & Ingestion Standards
 
-PDF ingestion is experimental.
+To enforce 100% reliable system responses, this architecture completely deprecates legacy font formats (e.g., Preeti encoded PDFs) to eliminate parsing garbage strings like `g]kfnsf] ;+ljwfg`. All documents enter the system as clean **UTF-8 Unicode plain text** mapped under standard structural formatting rules.
 
-Current challenge:
-
-* Many Nepali legal PDFs use Preeti encoding
-* Direct PDF extraction often produces corrupted text
-
-Example:
+### Document Parsing Pattern Example:
 
 ```txt
-g]kfnsf] ;+ljwfg
+धारा १८. समानताको हक: (१) सबै नागरिक कानूनको दृष्टिमा समान हुनेछन्। कसैलाई पनि कानूनको समान संरक्षणबाट वञ्चित गरिने छैन।
+
 ```
 
-instead of:
+During execution loops, this string block is dynamically segmented, processed through embedding models, and mapped across both storage levels into clean structured metadata models:
 
-```txt
-नेपालको संविधान
+```json
+{
+  "law_title": "नेपालको संविधान",
+  "section_number": "१८",
+  "heading": "समानताको हक",
+  "content": "(१) सबै नागरिक कानूनको दृष्टिमा समान हुनेछन्..."
+}
+
 ```
 
-Future improvements:
+---
 
-* Preeti → Unicode conversion
-* OCR pipeline
-* HTML ingestion
-* PDF normalization
+# 🗺️ Strategic Roadmap
+
+### Done (Completed Milestones)
+
+* **Phase 1:** Complete asynchronous relational model parsing and metadata structures.
+* **Phase 2:** Multi-stage Docker Compose design with persistent local data volumes.
+* **Phase 3:** Indentation and alignment updates inside `ollama.py` creating low-temperature prompt locks.
+* **Phase 4:** Unified state tracking panels showing answers side-by-side with verified database points.
+
+### Next (Upcoming Roadmap)
+
+* **Multi-Document Expansion:** Bulk upload mechanics for the Civil Code (मुलुकी देवानी संहिता) and Criminal Code (मुलुकी अपराध संहिता).
+* **Sub-Section Deep Chunking:** Upgraded regex parsers to prevent token spillover inside crowded clauses.
+* **Dynamic Document Ingestor Dashboard:** Simple admin page allowing verified legal professionals to drop text laws onto the active collection index using a UI.
 
 ---
 
-# Roadmap
+# ⚖️ Disclaimers & Regulatory Warning
 
-## Phase 1
+This software ecosystem is engineered as an automated decision-support system to streamline legal document indexing, search execution, and educational verification workflows.
 
-* Unicode law ingestion
-* Search API
-* Database structure
-
-## Phase 2
-
-* Embeddings
-* Qdrant indexing
-* Semantic retrieval
-
-## Phase 3
-
-* Hybrid retrieval
-* Citation-aware RAG
-* Legal answer generation
-
-## Phase 4
-
-* Judgment ingestion
-* Lawyer review workflow
-* Fine-tuning
-* Production deployment
+**It does not constitute authentic legal advice.** All generative output layers are context-constrained approximations and must be verified against authoritative official government publications (*Nepal Gazette / नेपाल राजपत्र*) or audited by a licensed attorney before use in formal judicial procedures.
 
 ---
 
-# Important Notes
+### 📄 License & Attribution
 
-This project is intended for:
+Distributed under the **MIT Open-Source License**.
 
-* legal research
-* educational purposes
-* retrieval assistance
-
-It is NOT legal advice.
-
-Always verify legal outputs with authoritative legal sources and qualified professionals.
-
----
-
-# License
-
-MIT License
-
----
-
-# Author
-
-Built by Suraj Nepal.
+Developed and engineered with passion by **Suraj Nepal**.
