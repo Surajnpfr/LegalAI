@@ -275,7 +275,7 @@ During execution loops, this string block is dynamically segmented, processed th
 # ⚖️ Disclaimers & Regulatory Warning
 
 This software ecosystem is engineered as an automated decision-support system to streamline legal document indexing, search execution, and educational verification workflows.
-
+This tool ia solely for education purposes only.
 **It does not constitute authentic legal advice.** All generative output layers are context-constrained approximations and must be verified against authoritative official government publications (*Nepal Gazette / नेपाल राजपत्र*) or audited by a licensed attorney before use in formal judicial procedures.
 
 ---
